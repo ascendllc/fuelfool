@@ -44,10 +44,14 @@ export function ResultsPanel({ gasPrice, mpg, distance, duration, onReset }: Res
     >
       <h2 className="text-3xl font-display font-bold text-foreground mb-6">The Damage</h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-sm">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4 text-sm">
         <div className="p-4 bg-background rounded-lg border border-card-border">
           <div className="text-muted-foreground mb-1">Distance</div>
           <div className="font-bold text-foreground text-lg">{distance} mi</div>
+        </div>
+        <div className="p-4 bg-background rounded-lg border border-card-border">
+          <div className="text-muted-foreground mb-1">Drive Time</div>
+          <div className="font-bold text-foreground text-lg">{duration}</div>
         </div>
         <div className="p-4 bg-background rounded-lg border border-card-border">
           <div className="text-muted-foreground mb-1">Your MPG</div>

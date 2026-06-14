@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { 
-  useGetVehicleYears, 
+  useGetVehicleYears,
+  getGetVehicleYearsQueryKey,
   useGetVehicleMakes, 
   useGetVehicleModels, 
   useGetVehicleTrims, 
@@ -30,7 +31,7 @@ export function Step2YourRide({ isActive, isComplete, onComplete }: Step2Props) 
   const [submittedTrimId, setSubmittedTrimId] = useState<string | null>(null);
 
   const { data: years, isLoading: loadingYears } = useGetVehicleYears({
-    query: { enabled: isActive && !isComplete }
+    query: { enabled: isActive && !isComplete, queryKey: getGetVehicleYearsQueryKey() }
   });
 
   const { data: makes, isLoading: loadingMakes } = useGetVehicleMakes(

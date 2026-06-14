@@ -12,15 +12,17 @@ interface Step3Props {
   onComplete: (distance: number, duration: string) => void;
 }
 
-declare global {
-  interface Window {
-    google?: typeof google;
-  }
+function isMapsLoaded(): boolean {
+  return (
+    typeof google !== "undefined" &&
+    typeof google.maps !== "undefined" &&
+    typeof google.maps.places !== "undefined"
+  );
 }
 
 function loadGoogleMapsScript(apiKey: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (window.google?.maps?.places) {
+    if (isMapsLoaded()) {
       resolve();
       return;
     }
@@ -62,12 +64,12 @@ export function Step3YourTrip({ isActive, isComplete, onComplete }: Step3Props) 
 
   useEffect(() => {
     if (!mapsLoaded || !isActive || isComplete || autocompleteSetupRef.current) return;
-    if (!window.google?.maps?.places) return;
+    if (!isMapsLoaded()) return;
 
     autocompleteSetupRef.current = true;
 
     if (originRef.current) {
-      const originAC = new window.google.maps.places.Autocomplete(originRef.current, { types: ["geocode"] });
+      const originAC = new google.maps.places.Autocomplete(originRef.current, { types: ["geocode"] });
       originAC.addListener("place_changed", () => {
         const place = originAC.getPlace();
         if (place.formatted_address) setOrigin(place.formatted_address);
@@ -75,7 +77,7 @@ export function Step3YourTrip({ isActive, isComplete, onComplete }: Step3Props) 
     }
 
     if (destRef.current) {
-      const destAC = new window.google.maps.places.Autocomplete(destRef.current, { types: ["geocode"] });
+      const destAC = new google.maps.places.Autocomplete(destRef.current, { types: ["geocode"] });
       destAC.addListener("place_changed", () => {
         const place = destAC.getPlace();
         if (place.formatted_address) setDestination(place.formatted_address);
