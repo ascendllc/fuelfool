@@ -12,7 +12,7 @@ async function fetchFuelEconomy<T>(url: string): Promise<T | null> {
 
 type MenuItem = { value: string; text: string };
 type MenuResponse = { menuItem: MenuItem | MenuItem[] };
-type OptionsItem = { id: string | number; text: string };
+type OptionsItem = { value: string | number; text: string };
 type OptionsResponse = { menuItem: OptionsItem | OptionsItem[] };
 type VehicleData = {
   comb08?: number;
@@ -78,7 +78,7 @@ router.get("/vehicle/trims", async (req, res) => {
     );
     if (!data?.menuItem) return res.json([]);
     const items = Array.isArray(data.menuItem) ? data.menuItem : [data.menuItem];
-    return res.json(items.map((i) => ({ id: String(i.id), text: String(i.text) })));
+    return res.json(items.map((i) => ({ id: String(i.value), text: String(i.text) })));
   } catch {
     return res.status(500).json({ error: "Failed to fetch vehicle trims." });
   }
@@ -92,9 +92,9 @@ router.get("/vehicle/mpg", async (req, res) => {
     const data = await fetchFuelEconomy<VehicleData>(`${FE_BASE}/${encodeURIComponent(id)}`);
     if (!data) return res.status(404).json({ error: "No MPG data found for that vehicle. The EPA may not have records for it." });
 
-    const combined = data.comb08 ?? 0;
-    const city = data.city08 ?? 0;
-    const highway = data.highway08 ?? 0;
+    const combined = Number(data.comb08 ?? 0);
+    const city = Number(data.city08 ?? 0);
+    const highway = Number(data.highway08 ?? 0);
     const fuelType = data.fuelType ?? data.fuelType1 ?? "Regular Gasoline";
 
     return res.json({ combined, city, highway, fuelType });
