@@ -25,9 +25,16 @@ app.use(
     },
   }),
 );
+
+const DEFAULT_ORIGINS = [
+  "https://fuelfool.com",
+  "https://www.fuelfool.com",
+  "https://fuelfool.vercel.app",
+];
+
 const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim())
-  : true;
+  : DEFAULT_ORIGINS;
 
 app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
