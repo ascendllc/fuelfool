@@ -1,0 +1,1 @@
+- [esbuild-railway-routing](esbuild-railway-routing.md) — ESM esbuild bundle breaks Express sub-router on Railway; fix: CJS + externalize express/pino/cors + direct-mount critical routes

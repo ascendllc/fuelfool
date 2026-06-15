@@ -33,6 +33,10 @@ app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
+
 app.use("/api", router);
 
 export default app;
