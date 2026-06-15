@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://fuelfool.replit.app/sitemap.xml
+Sitemap: https://YOUR_PRODUCTION_DOMAIN/sitemap.xml
