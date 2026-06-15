@@ -76,7 +76,7 @@ export default function Contact() {
 
         <h2 className="text-3xl font-bold text-foreground mb-2">Contact</h2>
         <p className="text-muted-foreground mb-12 text-sm">
-          We'd love to hear from you.
+          Please utilize the details listed below to connect with us.
         </p>
 
         <div className="space-y-6">
