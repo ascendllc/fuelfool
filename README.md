@@ -52,10 +52,12 @@ The code is hosted at: **https://github.com/ascendllc/fuelfool**
 ### Step 1 — Deploy the API server on Railway
 
 1. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo**
-2. Select this repository
-3. Railway auto-detects `artifacts/api-server/railway.toml` and uses:
-   - **Build:** `pnpm install --frozen-lockfile && pnpm --filter @workspace/api-server build`
-   - **Start:** `node --enable-source-maps artifacts/api-server/dist/index.mjs`
+2. Select the `ascendllc/fuelfool` repository
+3. In the service settings → **Source** → set **Root Directory** to `artifacts/api-server`
+   - This tells Railway to run commands from that subdirectory and pick up its `railway.toml`
+   - Railway then uses:
+     - **Build:** `cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @workspace/api-server build`
+     - **Start:** `node --enable-source-maps dist/index.mjs`
 4. In Railway → **Variables**, add:
 
    | Variable | Value |
