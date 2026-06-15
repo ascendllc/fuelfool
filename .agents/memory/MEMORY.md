@@ -1,1 +1,4 @@
 - [esbuild-railway-routing](esbuild-railway-routing.md) — ESM esbuild bundle breaks Express sub-router on Railway; fix: CJS + externalize express/pino/cors + direct-mount critical routes
+- [railway-deployment](railway-deployment.md) — Full Railway deploy setup: GraphQL API usage, service IDs, CORS, prod build gotchas
+- [vercel-deployment](vercel-deployment.md) — Full Vercel deploy setup: project ID, env vars, custom domains, DNS records for Squarespace
+- [fuelfool-architecture](fuelfool-architecture.md) — FuelFool stack overview: Railway API + Vercel frontend + GitHub repo + live domains
