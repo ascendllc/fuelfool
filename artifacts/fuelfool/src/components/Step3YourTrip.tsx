@@ -15,12 +15,12 @@ interface Step3Props {
 
 type Suggestion = { description: string; placeId: string };
 
-const BASE_URL = import.meta.env.BASE_URL?.replace(/\/$/, "") ?? "";
+const API_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, "") ?? "";
 
 async function fetchSuggestions(q: string): Promise<Suggestion[]> {
   if (!q || q.trim().length < 2) return [];
   try {
-    const res = await fetch(`${BASE_URL}/api/autocomplete?q=${encodeURIComponent(q.trim())}`);
+    const res = await fetch(`${API_BASE}/api/autocomplete?q=${encodeURIComponent(q.trim())}`);
     if (!res.ok) return [];
     return await res.json() as Suggestion[];
   } catch {
