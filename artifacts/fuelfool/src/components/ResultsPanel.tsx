@@ -239,7 +239,7 @@ export function ResultsPanel({ gasPrice, mpg, distance, duration, zip, onReset }
         <p className="text-muted-foreground mb-6 leading-relaxed">
           Electric vehicles average <strong className="text-foreground">{EV_MPGE} MPGe</strong> — nearly{" "}
           <strong className="text-foreground">{Math.round(EV_MPGE / mpg)}× more efficient</strong> than your{" "}
-          {mpg} MPG vehicle. At your local electricity rate of{" "}
+          {mpg} MPG vehicle. At your average state electricity rate of{" "}
           <strong className="text-foreground">${electricityRate.toFixed(2)}/kWh</strong>, EVs cost about{" "}
           <strong className="text-foreground">{(evCostPerMile * 100).toFixed(1)}¢ per mile</strong> to
           run — a fraction of what gasoline costs. They also have{" "}
