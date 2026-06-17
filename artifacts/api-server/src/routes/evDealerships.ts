@@ -45,47 +45,57 @@ router.get("/ev-dealerships", async (req, res) => {
   try {
     const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${zip}&key=${apiKey}`;
     const teslaUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(`Tesla dealership near ${zip}`)}&key=${apiKey}`;
+    const rivianUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(`Rivian dealership near ${zip}`)}&key=${apiKey}`;
+    const polestarUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(`Polestar dealership near ${zip}`)}&key=${apiKey}`;
     const evUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(`electric vehicle car dealership near ${zip}`)}&key=${apiKey}`;
 
-    const [geocodeRes, teslaRes, evRes] = await Promise.all([
+    const [geocodeRes, teslaRes, rivianRes, polestarRes, evRes] = await Promise.all([
       fetch(geocodeUrl),
       fetch(teslaUrl),
+      fetch(rivianUrl),
+      fetch(polestarUrl),
       fetch(evUrl),
     ]);
 
-    const [geocodeData, teslaData, evData] = await Promise.all([
+    const [geocodeData, teslaData, rivianData, polestarData, evData] = await Promise.all([
       geocodeRes.json() as Promise<GeocodeResponse>,
       teslaRes.json() as Promise<PlacesResponse>,
+      rivianRes.json() as Promise<PlacesResponse>,
+      polestarRes.json() as Promise<PlacesResponse>,
       evRes.json() as Promise<PlacesResponse>,
     ]);
 
     const zipLocation = geocodeData.results?.[0]?.geometry?.location;
 
-    const teslaResults = teslaData.results ?? [];
-    const closestTesla = teslaResults.find((r) =>
-      r.name.toLowerCase().includes("tesla")
-    ) ?? teslaResults[0];
+    function buildBrandDealer(
+      results: PlacesResult[],
+      brandKeyword: string,
+      flag: Record<string, boolean>,
+    ) {
+      const match = results.find((r) => r.name.toLowerCase().includes(brandKeyword)) ?? results[0];
+      if (!match) return null;
+      const loc = match.geometry?.location;
+      const distanceMiles =
+        zipLocation && loc
+          ? Math.round(haversineMiles(zipLocation.lat, zipLocation.lng, loc.lat, loc.lng) * 10) / 10
+          : undefined;
+      return {
+        name: match.name,
+        address: match.formatted_address,
+        mapsUrl: `https://www.google.com/maps/place/?q=place_id:${match.place_id}`,
+        distanceMiles,
+        ...flag,
+      };
+    }
 
-    const teslaDealer = closestTesla
-      ? (() => {
-          const loc = closestTesla.geometry?.location;
-          const distanceMiles =
-            zipLocation && loc
-              ? Math.round(haversineMiles(zipLocation.lat, zipLocation.lng, loc.lat, loc.lng) * 10) / 10
-              : undefined;
-          return {
-            name: closestTesla.name,
-            address: closestTesla.formatted_address,
-            mapsUrl: `https://www.google.com/maps/place/?q=place_id:${closestTesla.place_id}`,
-            distanceMiles,
-            isTesla: true,
-          };
-        })()
-      : null;
+    const teslaDealer = buildBrandDealer(teslaData.results ?? [], "tesla", { isTesla: true });
+    const rivianDealer = buildBrandDealer(rivianData.results ?? [], "rivian", { isRivian: true });
+    const polestarDealer = buildBrandDealer(polestarData.results ?? [], "polestar", { isPolestar: true });
 
+    const brandNames = new Set(["tesla", "rivian", "polestar"]);
     const generalDealers = (evData.results ?? [])
-      .filter((r) => !r.name.toLowerCase().includes("tesla"))
-      .slice(0, 4)
+      .filter((r) => !brandNames.has(r.name.toLowerCase().split(" ")[0]))
+      .slice(0, 3)
       .map((r) => ({
         name: r.name,
         address: r.formatted_address,
@@ -94,8 +104,10 @@ router.get("/ev-dealerships", async (req, res) => {
 
     const combined = [
       ...(teslaDealer ? [teslaDealer] : []),
+      ...(rivianDealer ? [rivianDealer] : []),
+      ...(polestarDealer ? [polestarDealer] : []),
       ...generalDealers,
-    ];
+    ].slice(0, 6);
 
     return res.json(combined);
   } catch {

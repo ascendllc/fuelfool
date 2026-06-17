@@ -352,34 +352,38 @@ export function ResultsPanel({ gasPrice, mpg, distance, duration, zip, onReset }
               Here are EV dealerships near ZIP <strong className="text-foreground">{zip}</strong>:
             </p>
             <div className="space-y-3 mb-6">
-              {dealerships.map((d, i) => (
-                <a
-                  key={i}
-                  href={d.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`flex items-start gap-3 p-4 rounded-lg border transition-all group ${
-                    d.isTesla
-                      ? "bg-primary/5 border-primary/40 hover:border-primary hover:bg-primary/10"
-                      : "bg-background border-card-border hover:border-primary/50 hover:bg-primary/5"
-                  }`}
-                >
-                  <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">{d.name}</span>
-                      {d.isTesla && (
-                        <span className="text-xs font-bold text-primary border border-primary/40 rounded px-1.5 py-0.5 shrink-0">Closest Tesla</span>
-                      )}
-                      {d.distanceMiles !== undefined && (
-                        <span className="text-xs text-muted-foreground shrink-0">({d.distanceMiles} mi away)</span>
-                      )}
+              {dealerships.map((d, i) => {
+                const isBrand = d.isTesla || d.isRivian || d.isPolestar;
+                const badge = d.isTesla ? "Closest Tesla" : d.isRivian ? "Closest Rivian" : d.isPolestar ? "Closest Polestar" : null;
+                return (
+                  <a
+                    key={i}
+                    href={d.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex items-start gap-3 p-4 rounded-lg border transition-all group ${
+                      isBrand
+                        ? "bg-primary/5 border-primary/40 hover:border-primary hover:bg-primary/10"
+                        : "bg-background border-card-border hover:border-primary/50 hover:bg-primary/5"
+                    }`}
+                  >
+                    <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">{d.name}</span>
+                        {badge && (
+                          <span className="text-xs font-bold text-primary border border-primary/40 rounded px-1.5 py-0.5 shrink-0">{badge}</span>
+                        )}
+                        {d.distanceMiles !== undefined && (
+                          <span className="text-xs text-muted-foreground shrink-0">({d.distanceMiles} mi away)</span>
+                        )}
+                      </div>
+                      <div className="text-sm text-muted-foreground truncate">{d.address}</div>
                     </div>
-                    <div className="text-sm text-muted-foreground truncate">{d.address}</div>
-                  </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-0.5" />
-                </a>
-              ))}
+                    <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-0.5" />
+                  </a>
+                );
+              })}
             </div>
           </>
         )}
