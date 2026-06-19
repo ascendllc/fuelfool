@@ -67,7 +67,7 @@ function SharePanel({ cost, distance, evTripCost }: {
   };
 
   const handleCopyFor = async (platform: "instagram" | "tiktok") => {
-    const caption = `${text} #FuelTru #${platform === "tiktok" ? "TikTok" : "Instagram"}`;
+    const caption = `${text} #FuelTru #${platform === "tiktok" ? "TikTokFinance" : "GasPrices"}`;
     try {
       await navigator.clipboard.writeText(caption);
     } catch {
@@ -80,6 +80,8 @@ function SharePanel({ cost, distance, evTripCost }: {
     }
     setCopied(platform);
     setTimeout(() => setCopied(null), 2500);
+    const dest = platform === "tiktok" ? "https://www.tiktok.com/" : "https://www.instagram.com/";
+    window.open(dest, "_blank", "noopener,noreferrer");
   };
 
   const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
